@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Metrobüs şikâyet analizi — YL dönem projesi · İlkay Uyanık</title>
+<meta name="description" content="YTÜ Bilgi Teknolojileri tezsiz yüksek lisans dönem projesi: X paylaşımlarıyla metrobüs durağı bazlı şikâyet analizi. İlerleme ve ilk bulgular.">
+<meta property="og:title" content="X paylaşımlarıyla metrobüs durağı bazlı şikâyet analizi">
+<meta property="og:description" content="YTÜ BLM5002 dönem projesi: ilerleme ve ilk bulgular.">
+<meta property="og:url" content="https://ilkayuyanik.com/yl-proje/">
+<meta name="theme-color" content="#f5ead8">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='11' fill='%23f5ead8' stroke='%23c67139' stroke-width='6'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../assets/styles.css">
+<style>
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{margin:0;overflow-x:clip;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:var(--color-accent-700)} a:hover{color:var(--color-accent-800)}
+.btn{white-space:nowrap}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+h1,h2,h3,[style*="--font-heading"]{font-variation-settings:'SOFT' 100,'WONK' 1}
+
+.wrap{max-width:1200px;margin:0 auto;padding-inline:clamp(20px,5vw,56px)}
+.bolum{padding-top:clamp(72px,9vw,120px)}
+.kicker{display:flex;align-items:center;gap:12px;margin:0 0 20px;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent-700)}
+.kicker::before{content:"";flex:none;width:16px;height:16px;border-radius:50%;border:4px solid var(--color-accent);background:var(--color-bg)}
+.bolum h2{margin:0 0 40px;font-size:clamp(30px,3.6vw,46px);max-width:780px;text-wrap:balance}
+.lead{margin:0;font-size:clamp(17px,1.5vw,19px);line-height:1.6;color:var(--color-neutral-800);max-width:680px;text-wrap:pretty}
+.metin{margin:0;font-size:16.5px;line-height:1.65;color:var(--color-neutral-800);max-width:760px;text-wrap:pretty}
+
+.kunye{margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:18px 32px;max-width:860px}
+.kunye dt{margin-bottom:4px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--color-accent-700)}
+.kunye dd{margin:0;font-size:16px}
+.not{margin:0;padding:14px 18px;border-radius:var(--radius-md);background:var(--color-surface);font-size:15px;color:var(--color-neutral-800);max-width:680px}
+
+.rakamlar{list-style:none;margin:clamp(44px,5vw,72px) 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:32px}
+.rakamlar li{display:flex;flex-direction:column;gap:10px}
+.rakamlar .serit{width:44px;height:8px;border-radius:4px}
+.rakamlar .sayi{font-family:var(--font-heading);font-size:clamp(36px,3.8vw,50px);line-height:1}
+.rakamlar .aciklama{font-size:16px;color:var(--color-neutral-800);max-width:240px}
+
+.hat{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:36px 0}
+.hat li{display:flex;flex-direction:column;gap:14px;padding-right:24px}
+.hat .iz{display:flex;align-items:center}
+.hat .nokta{flex:none;width:22px;height:22px;border-radius:50%;border:5px solid var(--color-text);background:var(--color-bg)}
+.hat .bag{flex:1;height:8px;margin-left:-2px;border-radius:0 4px 4px 0;background:var(--color-accent)}
+.hat strong{font-family:var(--font-heading);font-weight:400;font-size:22px}
+.hat span{font-size:15.5px;color:var(--color-neutral-800);text-wrap:pretty}
+@media (max-width:480px){.hat{grid-template-columns:1fr}}
+
+.cizelge{position:relative;max-width:780px}
+.cizelge::before{content:"";position:absolute;left:13px;top:12px;bottom:12px;width:10px;border-radius:5px;background:var(--color-accent-2)}
+.cizelge ol{list-style:none;margin:0;padding:0 0 0 52px;display:flex;flex-direction:column;gap:34px}
+.cizelge li{position:relative;display:flex;flex-direction:column;gap:6px}
+.cizelge li::before{content:"";position:absolute;left:-46px;top:3px;width:24px;height:24px;border-radius:50%;background:var(--color-bg);border:5px solid var(--color-text)}
+.cizelge li.yapildi::before{background:var(--color-text)}
+.cizelge li.sirada::before{left:-52px;top:0;width:36px;height:36px;background:var(--color-accent);border:6px solid var(--color-bg);box-shadow:0 0 0 4px var(--color-text)}
+.cizelge .ust{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.cizelge .adim{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--color-accent-700)}
+.cizelge .tag{font-size:12px}
+.cizelge h3{margin:0;font-size:clamp(21px,2vw,26px)}
+.cizelge p{margin:0;font-size:16px;color:var(--color-neutral-800);text-wrap:pretty}
+.cizelge-not{margin:28px 0 0;font-size:14px;color:var(--color-neutral-700)}
+
+.grafik-kart{background:var(--color-surface);border-radius:var(--radius-lg);padding:clamp(20px,3vw,32px)}
+.grafik-kart h3{margin:0 0 6px;font-size:24px}
+.grafik-kart .alt{margin:0;font-size:14px;color:var(--color-neutral-700);max-width:720px}
+#grafik{position:relative;margin-top:16px;min-height:300px;border-radius:var(--radius-sm);outline-offset:6px}
+#grafik svg{display:block;overflow:visible}
+.ipucu{position:absolute;display:none;pointer-events:none;transform:translate(-50%,-100%);padding:8px 12px;border-radius:12px;background:var(--color-text);color:var(--color-bg);font-size:13px;line-height:1.35;white-space:nowrap;box-shadow:var(--shadow-md)}
+.ipucu strong{display:block;font-size:15px;font-weight:700}
+details.tablo{margin-top:14px}
+details.tablo summary{cursor:pointer;width:fit-content;font-size:14px;color:var(--color-accent-700)}
+details.tablo table{margin-top:10px;max-width:480px;font-variant-numeric:tabular-nums}
+details.tablo td,details.tablo thead th:not(:first-child){text-align:right}
+details.tablo tbody th{font-size:14px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--color-text);border-bottom:1px solid color-mix(in srgb,var(--color-text) 8%,transparent)}
+details.tablo tbody tr:last-child th,details.tablo tbody tr:last-child td{font-weight:700}
+.dipnot{margin:10px 0 0;font-size:13px;color:var(--color-neutral-700)}
+
+.kartlar{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:20px;margin-top:20px}
+.kart{display:flex;flex-direction:column;gap:12px;padding:clamp(22px,3vw,30px);border-radius:var(--radius-lg);background:var(--color-surface)}
+.kart h3{margin:0;font-size:24px}
+.kart ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:9px;font-size:15.5px;line-height:1.55;color:var(--color-neutral-800)}
+
+.liste{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;max-width:760px}
+.liste li{display:flex;gap:14px;align-items:flex-start;font-size:17px;line-height:1.55}
+.liste li::before{content:"";flex:none;width:12px;height:12px;margin-top:7px;border-radius:50%;background:var(--color-accent-2)}
+</style>
+</head>
+<body>
+<nav aria-label="Ana menü" style="position:sticky;top:0;z-index:20;background:var(--color-bg)">
+  <div class="wrap" style="padding-block:14px;display:flex;align-items:center;justify-content:space-between;gap:20px">
+    <a href="../" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--color-text)">
+      <span aria-hidden="true" style="width:18px;height:18px;border-radius:50%;border:5px solid var(--color-accent);background:var(--color-bg)"></span>
+      <span style="font-family:var(--font-heading);font-size:19px">İlkay Uyanık</span>
+    </a>
+    <a href="../" class="btn btn-secondary" style="border-radius:999px;padding:10px 20px">← Ana sayfa</a>
+  </div>
+</nav>
+
+<main id="top">
+  <section class="wrap" aria-labelledby="h-baslik" style="padding-top:clamp(24px,5vw,64px)">
+    <div style="display:flex;flex-direction:column;gap:24px">
+      <span style="font-size:14px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent-700)">YTÜ · BLM5002 dönem projesi</span>
+      <h1 id="h-baslik" style="margin:0;max-width:900px;font-size:clamp(36px,4.6vw,62px);line-height:1.04;letter-spacing:-.02em;text-wrap:balance">X paylaşımlarıyla metrobüs durağı bazlı şikâyet analizi</h1>
+      <p class="lead">X'teki metrobüs paylaşımlarının bir kısmını kendi kılavuzumla elle etiketliyor, bu etiketlerle bir sınıflandırma modeli eğitiyorum. Model bütün veriye uygulanınca hangi durakta, hangi konuda şikâyet edildiği ortaya çıkacak.</p>
+      <dl class="kunye">
+        <div><dt>Program</dt><dd>Yıldız Teknik Üniversitesi, Bilgi Teknolojileri tezsiz yüksek lisans</dd></div>
+        <div><dt>Danışman</dt><dd>Dr. Ziya Cihan Taysi</dd></div>
+        <div><dt>Son güncelleme</dt><dd>2 Kasım 2026</dd></div>
+      </dl>
+      <p class="not">Bu sayfa dönem projemin ilerleme sayfası; her adım bitince güncelleniyor. Ana sayfadaki “Metrobüs Sosyal Medya Şikâyet Analizi” kartı ayrı bir iş projesi, yöntemi farklı.</p>
+    </div>
+
+    <ul aria-label="Öne çıkan rakamlar" class="rakamlar">
+      <li><span aria-hidden="true" class="serit" style="background:var(--color-accent)"></span><span class="sayi">10.123</span><span class="aciklama">toplanan paylaşım, Ocak 2024 – Eylül 2026</span></li>
+      <li><span aria-hidden="true" class="serit" style="background:var(--color-accent-2)"></span><span class="sayi">9.495</span><span class="aciklama">temizlikten sonra kalan paylaşım</span></li>
+      <li><span aria-hidden="true" class="serit" style="background:var(--color-neutral-800)"></span><span class="sayi">300</span><span class="aciklama">elle etiketlenecek pilot örneklem</span></li>
+      <li><span aria-hidden="true" class="serit" style="background:var(--color-accent-600)"></span><span class="sayi">4 / 9</span><span class="aciklama">adım yapıldı</span></li>
+    </ul>
+  </section>
+
+  <section class="wrap bolum" aria-labelledby="h-yontem">
+    <p class="kicker">01 · Yöntem</p>
+    <h2 id="h-yontem">Etiketleri ben veriyorum, sınıflandırmayı eğittiğim model yapıyor.</h2>
+    <ol class="hat">
+      <li>
+        <div aria-hidden="true" class="iz"><span class="nokta"></span><span class="bag"></span></div>
+        <strong>Toplama</strong>
+        <span>Python ve Selenium'la, her durak ve gün için “durak adı + metrobüs” araması</span>
+      </li>
+      <li>
+        <div aria-hidden="true" class="iz"><span class="nokta"></span><span class="bag"></span></div>
+        <strong>Keşif ve temizlik</strong>
+        <span>Kopya ve konu dışı paylaşımlar çıkıyor; bağlantı, @hesap ve küfür işaretleniyor</span>
+      </li>
+      <li>
+        <div aria-hidden="true" class="iz"><span class="nokta"></span><span class="bag"></span></div>
+        <strong>Elle etiketleme</strong>
+        <span>Kendi kılavuzumla duygu (olumsuz, nötr, olumlu) ve konu</span>
+      </li>
+      <li>
+        <div aria-hidden="true" class="iz"><span class="nokta"></span><span class="bag"></span></div>
+        <strong>Model</strong>
+        <span>Önce TF-IDF ve lojistik regresyon; sonra BERTurk ya da TurkishBERTweet ince ayarı</span>
+      </li>
+      <li>
+        <div aria-hidden="true" class="iz"><span class="nokta" style="background:var(--color-accent-2)"></span></div>
+        <strong>Sonuç</strong>
+        <span>Durak × konu × duygu tablosu ve Dash panosu</span>
+      </li>
+    </ol>
+    <p class="metin" style="margin-top:40px">Model, 5 katlı katmanlı çapraz doğrulamayla ve makro F1 ile değerlendirilecek. Yerel büyük dil modelleri (Ollama) yalnız karşılaştırma için denenecek; etiketlemede ve asıl sınıflandırmada kullanılmıyor.</p>
+  </section>
+
+  <section class="wrap bolum" aria-labelledby="h-durum">
+    <p class="kicker">02 · Durum</p>
+    <h2 id="h-durum">Neredeyim?</h2>
+    <div class="cizelge">
+      <ol>
+        <li class="yapildi">
+          <div class="ust"><span class="adim">Adım 0</span><span class="tag tag-accent-2">Bitti</span></div>
+          <h3>Kurulum</h3>
+          <p>Gizli GitHub deposu, Python ortamı ve veri sözlüğü.</p>
+        </li>
+        <li class="yapildi">
+          <div class="ust"><span class="adim">Adım 1</span><span class="tag tag-accent-2">Yapıldı</span></div>
+          <h3>Keşif</h3>
+          <p>Yıl, ay ve durak dağılımı; kopyalar, metin uzunluğu, hesaplar ve sözcük ölçümleri.</p>
+        </li>
+        <li class="yapildi">
+          <div class="ust"><span class="adim">Adım 2</span><span class="tag tag-accent-2">Yapıldı</span></div>
+          <h3>Temizlik</h3>
+          <p>Konu dışı ve kopya paylaşımlar çıktı; metin modele hazırlandı.</p>
+        </li>
+        <li class="yapildi">
+          <div class="ust"><span class="adim">Adım 3</span><span class="tag tag-accent-2">Yapıldı</span></div>
+          <h3>Pilot örneklem</h3>
+          <p>Elle etiketlenecek 300 paylaşım seçildi.</p>
+        </li>
+        <li class="sirada">
+          <div class="ust"><span class="adim">Adım 4</span><span class="tag tag-accent">Sırada</span></div>
+          <h3>Etiket kılavuzu</h3>
+          <p>Duygu tanımları; alay, haber ve kaza haberine üzülme gibi zor durumların kuralları; taslak konular.</p>
+        </li>
+        <li>
+          <div class="ust"><span class="adim">Adım 5</span><span class="tag tag-neutral">Planlandı</span></div>
+          <h3>Pilot etiketleme</h3>
+          <p>300 paylaşım. Bir hafta sonra 50'si yeniden etiketlenip tutarlılık (Cohen'in kappası) ölçülecek.</p>
+        </li>
+        <li>
+          <div class="ust"><span class="adim">Adım 6</span><span class="tag tag-neutral">Planlandı</span></div>
+          <h3>İlk model</h3>
+          <p>Olumsuz / olumsuz değil; taban çizgiyle karşılaştırma ve hata analizi.</p>
+        </li>
+        <li>
+          <div class="ust"><span class="adim">Adım 7</span><span class="tag tag-neutral">Planlandı</span></div>
+          <h3>İlk uygulama</h3>
+          <p>Model etiketlenmemiş bir aya (Eylül 2026) uygulanacak.</p>
+        </li>
+        <li>
+          <div class="ust"><span class="adim">Adım 8</span><span class="tag tag-neutral">Planlandı</span></div>
+          <h3>Büyütme</h3>
+          <p>1.500–2.000 etiket, üç sınıflı duygu ve konu modeli, BERTurk, durak × konu × duygu ve Dash panosu.</p>
+        </li>
+      </ol>
+    </div>
+    <p class="cizelge-not">“Yapıldı”: kod çalıştı ve sonuçlar çıktı; notlar son okumada.</p>
+  </section>
+
+  <section class="wrap bolum" aria-labelledby="h-bulgu">
+    <p class="kicker">03 · İlk bulgular</p>
+    <h2 id="h-bulgu">Veriden ilk sayılar</h2>
+
+    <figure class="grafik-kart">
+      <h3>Aylık paylaşım sayısı</h3>
+      <p class="alt">Toplanan 10.123 paylaşım, İstanbul saatine göre. Bir aya dokunun ya da üzerine gelin; klavyede ok tuşlarıyla gezilebilir.</p>
+      <div id="grafik" tabindex="0" aria-label="Aylık paylaşım grafiği. Sol ve sağ ok tuşlarıyla aylar arasında gezilebilir; aynı sayılar aşağıdaki tabloda.">
+        <div id="ipucu" class="ipucu" role="status" aria-live="polite"></div>
+      </div>
+      <details class="tablo">
+        <summary>Tablo olarak göster</summary>
+        <table class="table">
+          <thead><tr><th scope="col">Ay</th><th scope="col">2024</th><th scope="col">2025</th><th scope="col">2026</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Ocak</th><td>360</td><td>599</td><td>148</td></tr>
+            <tr><th scope="row">Şubat</th><td>239</td><td>502</td><td>175</td></tr>
+            <tr><th scope="row">Mart</th><td>538</td><td>306</td><td>283</td></tr>
+            <tr><th scope="row">Nisan</th><td>279</td><td>346</td><td>211</td></tr>
+            <tr><th scope="row">Mayıs</th><td>187</td><td>621</td><td>219</td></tr>
+            <tr><th scope="row">Haziran</th><td>154</td><td>241</td><td>223</td></tr>
+            <tr><th scope="row">Temmuz</th><td>168</td><td>395</td><td>193</td></tr>
+            <tr><th scope="row">Ağustos</th><td>642</td><td>259</td><td>169</td></tr>
+            <tr><th scope="row">Eylül</th><td>295</td><td>317</td><td>235</td></tr>
+            <tr><th scope="row">Ekim</th><td>229</td><td>386</td><td>—</td></tr>
+            <tr><th scope="row">Kasım</th><td>228</td><td>448</td><td>—</td></tr>
+            <tr><th scope="row">Aralık</th><td>193</td><td>335</td><td>—</td></tr>
+            <tr><th scope="row">Toplam</th><td>3.512</td><td>4.755</td><td>1.856</td></tr>
+          </tbody>
+        </table>
+      </details>
+      <p class="dipnot">Eylül 2026'ya, 30 Eylül gecesi atılıp İstanbul saatiyle 1 Ekim'e düşen 3 paylaşım dahil.</p>
+    </figure>
+
+    <div class="kartlar">
+      <article class="kart">
+        <h3>Keşif</h3>
+        <ul>
+          <li>Aylık sayı 148 ile 642 arasında oynuyor; tepeler Ağustos 2024, Mayıs 2025 ve Ocak 2025'te. Örneklem bu yüzden tek bir aydan değil, bütün dönemden alındı.</li>
+          <li>Veri birkaç hesabın elinde değil: 6.251 hesabın %81'i tek paylaşım yapmış, ilk 10 hesap paylaşımların %5,6'sını.</li>
+          <li>Durak dağılımı çarpık: ilk 10 durak adı paylaşımların %64'ünü alıyor.</li>
+          <li>Olumlu duygu taşıyan aday sözcükler paylaşımların yaklaşık %1'inde. İlk model bu yüzden iki sınıflı: olumsuz / olumsuz değil.</li>
+        </ul>
+      </article>
+      <article class="kart">
+        <h3>Temizlik</h3>
+        <ul>
+          <li>Metninde “metrob” geçmeyen 93 paylaşım ve 535 kopya çıktı: 10.123 → 9.495 (%6,2).</li>
+          <li>Bağlantılar, @hesaplar ve küfürler işaretlerle değiştirildi; metin Türkçe kurallarla küçük harfe çevrildi.</li>
+          <li>Ham veri değiştirilmedi; temiz veri ayrı bir tabloda.</li>
+        </ul>
+      </article>
+      <article class="kart">
+        <h3>Pilot örneklem</h3>
+        <ul>
+          <li>300 paylaşım, 33 aya payları oranında dağıtıldı: ayda 5 ile 19 arası.</li>
+          <li>Bir hesaptan en çok 2 paylaşım alındı; sabit tohumla aynı örneklem yeniden üretilebiliyor.</li>
+          <li>Yılların payı korundu: 2024 %34, 2025 %47, 2026 %19.</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="wrap bolum" aria-labelledby="h-gizlilik" style="padding-bottom:clamp(48px,6vw,80px)">
+    <p class="kicker">04 · Veri ve gizlilik</p>
+    <h2 id="h-gizlilik">Paylaşımlar yayımlanmıyor, yalnız toplu sayılar.</h2>
+    <ul class="liste">
+      <li>Kullanıcı adları kaydedilmedi; her hesap geri çevrilemeyen bir kodla tutuluyor.</li>
+      <li>Ham veri ve paylaşım metinleri yayımlanmıyor; bu sayfadaki bütün sayılar toplu.</li>
+      <li>Raporda ve panoda hesaplar anonim, küfürler maskeli olacak.</li>
+      <li>Kod ve ayrıntılı notlar gizli bir GitHub deposunda.</li>
+    </ul>
+    <footer style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;margin-top:clamp(56px,7vw,96px);padding-top:20px;border-top:1px solid var(--color-divider);font-size:14px;color:var(--color-neutral-700)">
+      <span>© 2026 İlkay Uyanık · ilkayuyanik.com</span>
+      <a href="../">← Ana sayfa</a>
+    </footer>
+  </section>
+</main>
+
+<script>
+(function () {
+  var AY = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+  var KISA = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
+  // Toplanan paylaşımların aylık sayısı, İstanbul saatine göre (Ocak 2024 – Eylül 2026).
+  // Eylül 2026'ya, 1 Ekim'e düşen 3 paylaşım dahil. Aynı sayılar sayfadaki tabloda da var.
+  var SAYI = [360, 239, 538, 279, 187, 154, 168, 642, 295, 229, 228, 193,
+              599, 502, 306, 346, 621, 241, 395, 259, 317, 386, 448, 335,
+              148, 175, 283, 211, 219, 223, 193, 169, 235];
+  var veri = SAYI.map(function (n, i) { return { yil: 2024 + Math.floor(i / 12), ay: i % 12, n: n }; });
+  var enCok = 0;
+  veri.forEach(function (d, i) { if (d.n > veri[enCok].n) enCok = i; });
+
+  var kutu = document.getElementById('grafik');
+  var ipucu = document.getElementById('ipucu');
+  var NS = 'http://www.w3.org/2000/svg';
+  var RENK = 'var(--color-accent-600)', SECILI_RENK = 'var(--color-accent-800)';
+  var olcu = null, secili = -1;
+
+  function yap(ad, oz, stil) {
+    var e = document.createElementNS(NS, ad);
+    for (var k in oz) e.setAttribute(k, oz[k]);
+    if (stil) e.setAttribute('style', stil);
+    return e;
+  }
+  function yazi(x, y, metin, oz, stil) {
+    var t = yap('text', oz, stil);
+    t.setAttribute('x', x);
+    t.setAttribute('y', y);
+    t.textContent = metin;
+    return t;
+  }
+
+  function ciz() {
+    var W = kutu.clientWidth;
+    if (!W) return;
+    var H = 300, m = { t: 30, r: 6, b: 36, l: 42 };
+    var pw = W - m.l - m.r, ph = H - m.t - m.b, ust = 700;
+    var y = function (v) { return m.t + ph - (v / ust) * ph; };
+    var dilim = pw / veri.length;
+    var en = Math.max(3, Math.min(24, dilim * 0.62));
+    var eksenYazisi = 'font-family:var(--font-body);font-size:12px;fill:var(--color-neutral-700);font-variant-numeric:tabular-nums';
+    var svg = yap('svg', { width: W, height: H, viewBox: '0 0 ' + W + ' ' + H, 'aria-hidden': 'true', focusable: 'false' });
+
+    [0, 200, 400, 600].forEach(function (t) {
+      svg.appendChild(yap('line', { x1: m.l, x2: W - m.r, y1: y(t), y2: y(t), 'shape-rendering': 'crispEdges' }, 'stroke:var(--color-divider);stroke-width:1'));
+      svg.appendChild(yazi(m.l - 8, y(t) + 4, String(t), { 'text-anchor': 'end' }, eksenYazisi));
+    });
+
+    [[0, 12, '2024'], [12, 12, '2025'], [24, 9, '2026']].forEach(function (p) {
+      var x0 = m.l + p[0] * dilim;
+      if (p[0] > 0) svg.appendChild(yap('line', { x1: x0, x2: x0, y1: m.t, y2: H - m.b + 8, 'shape-rendering': 'crispEdges' }, 'stroke:var(--color-divider);stroke-width:1'));
+      svg.appendChild(yazi(x0 + p[1] * dilim / 2, H - m.b + 24, p[2], { 'text-anchor': 'middle' },
+        'font-family:var(--font-body);font-size:13px;font-weight:600;fill:var(--color-neutral-800)'));
+    });
+
+    var cubuklar = veri.map(function (d, i) {
+      var x = m.l + i * dilim + (dilim - en) / 2, tepe = y(d.n), taban = y(0), r = Math.min(4, en / 2, taban - tepe);
+      var yol = 'M' + x + ',' + taban + 'V' + (tepe + r) + 'Q' + x + ',' + tepe + ' ' + (x + r) + ',' + tepe +
+                'H' + (x + en - r) + 'Q' + (x + en) + ',' + tepe + ' ' + (x + en) + ',' + (tepe + r) + 'V' + taban + 'Z';
+      return svg.appendChild(yap('path', { d: yol }, 'fill:' + RENK));
+    });
+
+    var d = veri[enCok];
+    svg.appendChild(yazi(m.l + (enCok + 0.5) * dilim, y(d.n) - 9, d.n + ' · ' + KISA[d.ay] + ' ' + d.yil, { 'text-anchor': 'middle' },
+      'font-family:var(--font-body);font-size:12px;font-weight:600;fill:var(--color-text)'));
+
+    kutu.replaceChildren(svg, ipucu);
+    olcu = { m: m, dilim: dilim, y: y, cubuklar: cubuklar, W: W };
+    if (secili >= 0) goster(secili);
+  }
+
+  function goster(i) {
+    if (!olcu) return;
+    secili = i;
+    olcu.cubuklar.forEach(function (c, k) { c.style.fill = k === i ? SECILI_RENK : RENK; });
+    var d = veri[i];
+    var deger = document.createElement('strong');
+    deger.textContent = d.n + ' paylaşım';
+    var ad = document.createElement('span');
+    ad.textContent = AY[d.ay] + ' ' + d.yil;
+    ipucu.replaceChildren(deger, ad);
+    var x = olcu.m.l + (i + 0.5) * olcu.dilim;
+    ipucu.style.left = Math.min(Math.max(x, 64), olcu.W - 64) + 'px';
+    ipucu.style.top = (olcu.y(d.n) - 12) + 'px';
+    ipucu.style.display = 'block';
+  }
+
+  function gizle() {
+    secili = -1;
+    if (olcu) olcu.cubuklar.forEach(function (c) { c.style.fill = RENK; });
+    ipucu.style.display = 'none';
+  }
+
+  function siraBul(olay) {
+    var x = olay.clientX - kutu.getBoundingClientRect().left - olcu.m.l;
+    return Math.min(veri.length - 1, Math.max(0, Math.floor(x / olcu.dilim)));
+  }
+
+  kutu.addEventListener('pointermove', function (e) { if (olcu) goster(siraBul(e)); });
+  kutu.addEventListener('pointerdown', function (e) { if (olcu) goster(siraBul(e)); });
+  kutu.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse') gizle(); });
+  document.addEventListener('pointerdown', function (e) { if (!kutu.contains(e.target)) gizle(); });
+  kutu.addEventListener('focus', function () { goster(secili >= 0 ? secili : enCok); });
+  kutu.addEventListener('blur', gizle);
+  kutu.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      var i = (secili < 0 ? enCok : secili) + (e.key === 'ArrowRight' ? 1 : -1);
+      goster(Math.min(veri.length - 1, Math.max(0, i)));
+    } else if (e.key === 'Escape') {
+      gizle();
+    }
+  });
+
+  if ('ResizeObserver' in window) new ResizeObserver(ciz).observe(kutu);
+  else window.addEventListener('resize', ciz);
+  ciz();
+})();
+</script>
+</body>
+</html>
